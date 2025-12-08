@@ -1,0 +1,16 @@
+sentencepiece
+datasets
+transformers
+torch
+snakemake
+matplotlib
+numpy
+pandas
+accelerate
+ipython
+ipdb
+evaluate
+scikit-learn
+sacrebleu
+snakemake-executor-plugin-slurm
+openai

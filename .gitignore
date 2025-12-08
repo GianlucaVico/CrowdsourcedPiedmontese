@@ -1,0 +1,14 @@
+.snakemake
+.env
+.venv/
+__pycache__/
+checkpoints/
+data/
+results/
+*.bak
+meta-llama
+utter-project
+tmp*
+*.tmp
+*.err
+plots/
