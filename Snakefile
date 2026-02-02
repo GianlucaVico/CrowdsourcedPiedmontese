@@ -13,7 +13,7 @@ models = {
     "eurollm": "utter-project/EuroLLM-9B-Instruct",
     "tower": "Unbabel/Tower-Plus-9B",
     "gemini": "google/gemini-2.5-flash-preview-09-2025",
-    # "gpt": "openai/gpt-5.1",
+    "gpt": "openai/gpt-4o-mini",
 }
 
 langs = ["ita", "pms", "fra", "eng"]
@@ -40,6 +40,10 @@ def get_partition(wc):
 def get_constraint(wc):
     if wc.model in ["gemini", "gpt"]:
         return ""
+    elif wc.model in ["llama", "qwen"]:
+        return "gpuram95G"
+    elif wc.model in ["eurollm", "tower", "gemma"]:
+        return "gpuram48G"
     else:
         return "gpuram95G"
 
@@ -64,8 +68,18 @@ rule all:
         expand("results/classification/{model}.{lang}.{split}.jsonl.scores", model=models.keys(), lang=langs, split=splits),
         expand("results/translation/{model}.{split}.{direction}.jsonl.scores", model=models.keys(), split=splits, direction=directions),
         expand("results/translation/{model}.{split}.{direction}.pivot_ita.jsonl.scores", model=models.keys(), split=splits, direction=pivot_directions),
-        expand("results/parity/{model}.{split}.jsonl", model=["llama", "gemma", "qwen", "eurollm", "tower", "bpe", "unigram"], split=splits),
+        expand("results/parity/{model}.{split}.jsonl", model=list(models.keys()) + ["bpe", "unigram"], split=splits),
         expand("results/align/ita_pms.{alignment_method}.scores", alignment_method=["eflomal", "simalign"]),
+        expand("results/parity/{model}.jsonl", model=list(models.keys()) + ["bpe", "unigram"]),
+        expand("results/classification/{model}.{lang}.jsonl.scores", model=models.keys(), lang=langs),
+        expand("results/translation/{model}.{direction}.jsonl.scores", model=models.keys(), direction=directions),
+        expand("results/translation/{model}.{direction}.pivot_ita.jsonl.scores", model=models.keys(), direction=pivot_directions),
+        "results/translation/baseline.ita_pms.jsonl.scores",
+        "results/translation/baseline.pms_ita.jsonl.scores",
+        "results/translation/baseline.pms_fra.jsonl.scores",
+        "results/translation/baseline.ita_fra.jsonl.scores",
+        "results/translation/baseline.pms_eng.jsonl.scores",
+        "results/translation/baseline.ita_eng.jsonl.scores"
 
 rule classification:
     input:
@@ -85,6 +99,13 @@ rule classification:
         tasks=1,
         nodes=1,        
         slurm_extra=get_gpus,
+        # mem="60G",
+        # slurm_partition=get_partition,
+        # constraint=lambda wc: "gpuram48G" if wc.model not in ["gemini", "gpt"] else "",
+        # cpus_per_task=1,
+        # tasks=1,
+        # nodes=1,
+        # slurm_extra=lambda wc: "-G 4" if wc.model not in ["gemini", "gpt"] else "",
     shell:
         """
         ./classification_task.py -m {params.model} -o {params.output_file} -l {wildcards.lang}
@@ -102,8 +123,14 @@ rule classification_eval:
         cpus_per_task=1
     shell:
         """
-        ./classification_score.py {input} {output}
+        ./classification_score.py -i {input} -o {output}
         """
+
+use rule classification_eval as classification_join_eval with:
+    input:
+        expand("checkpoints/classification/{{model}}.{{lang}}.{split}.jsonl", split=splits),
+    output:
+        "results/classification/{model}.{lang}.jsonl.scores",
 
 rule parity:
     input:
@@ -120,6 +147,12 @@ rule parity:
         """
         ./zero_shot_parity.py -m {params.model} -i {input} -o {output}
         """
+
+use rule parity as parity_join with:
+    input:
+        expand("data/pms_{split}.jsonl", split=splits),
+    output:
+        "results/parity/{model}.jsonl",
 
 rule translation:
     input:
@@ -158,9 +191,15 @@ rule translation_eval:
         slurm_extra="-G 1",
     shell:
         """
-        ./translation_score.py {input} {output}
+        ./translation_score.py -i {input} -o {output}
         """
-    
+
+use rule translation_eval as translation_join_eval with:
+    input:
+        expand("checkpoints/translation/{{model}}.{split}.{{direction}}.jsonl", split=splits),
+    output:
+        "results/translation/{model}.{direction}.jsonl.scores",
+
 rule translation_pivot:
     input:
         "data/pms_dev.jsonl",
@@ -189,6 +228,12 @@ use rule translation_eval as translation_pivot_eval with:
         "checkpoints/translation/{model}.{split}.{direction}.pivot_ita.jsonl",
     output:
         "results/translation/{model}.{split}.{direction}.pivot_ita.jsonl.scores",
+
+use rule translation_pivot_eval as translation_pivot_join_eval with:
+    input:
+        expand("checkpoints/translation/{{model}}.{split}.{{direction}}.pivot_ita.jsonl", split=splits),
+    output:
+        "results/translation/{model}.{direction}.pivot_ita.jsonl.scores",
 
 rule train_sp: # Generally run manually once
     output:
@@ -219,6 +264,13 @@ rule sp_parity:
         """
         python3 sp_parity.py -m {input.model} -i {input.data} -o {output}
         """
+
+use rule sp_parity as sp_parity_join with:
+    input:
+        data=expand("data/pms_{split}.jsonl", split=splits),
+        model="checkpoints/sentencepiece.{sp}.model",
+    output:
+        "results/parity/{sp}.jsonl",
     
 rule prepare_alignment_data: # Generally run manually once
     output:
@@ -276,7 +328,7 @@ rule simalign_align:
     resources:
         mem="10G",
         slurm_partition=SLURM_GPU_PARTITION,
-        constraint="gpuram24G",
+        constraint="gpuram24G|gpuram40G|gpuram48G",
         cpus_per_task=1,
         tasks=1,
         nodes=1,        
@@ -303,4 +355,21 @@ rule alignment_score:
         """
         ./alignment_score.py {input.gold} {input.input} {output}
         """
-    
+rule translation_score_baseline:
+    output:
+        "results/translation/baseline.{eval}_{trg}.jsonl.scores", # use eval when evaluating x->trg               
+    params:
+        source_files=expand("checkpoints/translation/gemma.{split}.{{trg}}_{{eval}}.jsonl", split=splits), # the actual model does not matter, we only use the reference field
+        target_files=expand("checkpoints/translation/gemma.{split}.{{eval}}_{{trg}}.jsonl", split=splits),
+    resources:
+        mem="15G",
+        slurm_partition=SLURM_GPU_PARTITION,
+        cpus_per_task=1,
+        constraint="gpuram24G|gpuram40G|gpuram48G",
+        tasks=1,
+        nodes=1,        
+        slurm_extra="-G 1",
+    shell:
+        """
+        ./translation_score_baseline.py --source {params.source_files} --target {params.target_files} --output {output}
+        """

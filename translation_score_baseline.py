@@ -11,22 +11,25 @@ from scipy.stats import bootstrap
 if __name__ == "__main__":
     import argparse
     parser = argparse.ArgumentParser()
-    parser.add_argument('--input', '-i', type=str, required=True, nargs='+', help="Input file prefix")
+    parser.add_argument('--source', type=str, required=True, nargs='+', help="Input file for the source language. Use the reference as 'translation'")
+    parser.add_argument('--target', type=str, required=True, nargs='+', help="Input file for the target language. Use the reference as reference")
     parser.add_argument('--output', '-o', type=str, required=True, help="Output score file")
     args = parser.parse_args()    
 
-    df = pd.concat([pd.read_json(f, lines=True) for f in args.input])
-    max_refs = max(len(refs) if isinstance(refs, list) else 1 for refs in df["reference"]) 
+    df1 = pd.concat([pd.read_json(f, lines=True) for f in args.source])
+    df2 = pd.concat([pd.read_json(f, lines=True) for f in args.target])
+    assert len(df1) == len(df2)
+    max_refs = max(len(refs) if isinstance(refs, list) else 1 for refs in df1["reference"]) 
     flat_preds = []
     flat_refs = []
     flat_sources = []
     all_refs = [[] for _ in range(max_refs)]  
     all_preds = []  
-    
-    for item in df.iloc:
-        pred = item['predicted']
-        refs = item['reference']
-        source = item['sentence']
+
+    for item1, item2 in zip(df1.iloc, df2.iloc):
+        pred = item1['reference']
+        refs = item2['reference']
+        source = item1['sentence']
         n_refs = len(refs) if isinstance(refs, list) else 1
         n_preds = len(pred) if isinstance(pred, list) else 1
         if n_preds == 1 and isinstance(pred, str):

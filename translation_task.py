@@ -1,7 +1,5 @@
 #!/usr/bin/env python3
-import transformers
 import datasets
-import torch
 import pandas as pd
 import itertools
 import tqdm
@@ -30,6 +28,8 @@ if __name__ == "__main__":
     if model_id in CLOSED_MODELS:
         model = ClosedModel(model_id)
     else:
+        import transformers
+        import torch
         model = transformers.pipeline("text-generation", model=model_id, device_map="auto", dtype=torch.bfloat16)
     
     def fmt(item_ds, system_prompt, user_prompt):        
@@ -65,7 +65,7 @@ if __name__ == "__main__":
             references = [i for i in references]
             splits = [split] * len(sentences)
             ids = ds[split]['flores_id']
-            for answer in model(fmt(ds[split][f'flores_{from_}'], system_prompt, user_prompt), do_sample=False, max_new_tokens=256):
+            for answer in model(fmt(ds[split][f'flores_{from_}'], system_prompt, user_prompt), do_sample=False, max_new_tokens=100):
                 tmp = answer[-1]['generated_text'][-1]['content'].strip()
                 answers.append(tmp)
             df = pd.DataFrame({'split': splits, 'id': ids, 'sentence': sentences, 'reference': references, 'predicted': answers})

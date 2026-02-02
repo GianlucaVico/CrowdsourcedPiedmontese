@@ -53,22 +53,28 @@ if __name__ == "__main__":
         "Do not add any explanations."
     )
     # user_prompt = "Classify the following sentence: '{}'\nCategory: "
-    user_prompt = "Is this a piece of news regarding {{“science, technology, travel, politics, sports, health, entertainment, or geography”}}? {}."
+    user_prompt = "Is this a piece of news regarding {{\"science, technology, travel, politics, sports, health, entertainment, or geography\"}}? {}."
 
     def fmt(item_ds):
-        if "qwen" in model_id.lower():
-            for item in item_ds:            
-                messages = [
-                    {"role": "system", "content": system_prompt},
-                    {"role": "user", "content": user_prompt.format(item.lower())}
-                ]
-                yield messages
-        else:
-            for item in item_ds:            
-                messages = [
-                    {"role": "user", "content": user_prompt.format(item.lower())}
-                ]
-                yield messages
+        # if "qwen" in model_id.lower():
+        #     for item in item_ds:            
+        #         messages = [
+        #             {"role": "system", "content": system_prompt},
+        #             {"role": "user", "content": user_prompt.format(item.lower())}
+        #         ]
+        #         yield messages
+        # else:
+        #     for item in item_ds:            
+        #         messages = [
+        #             {"role": "user", "content": user_prompt.format(item.lower())}
+        #         ]
+        #         yield messages        
+        for item in item_ds:            
+            messages = [
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": user_prompt.format(item.lower())}
+            ]
+            yield messages
 
     
     for split in ["dev", "devtest"]:
@@ -76,7 +82,7 @@ if __name__ == "__main__":
         answers = []
         labels = list(ds[split]['category'])
         full_outputs = []
-        for answer in model(fmt(ds[split][f'flores_{lang}']), do_sample=False, max_new_tokens=10):
+        for answer in model(fmt(ds[split][f'flores_{lang}']), do_sample=False, max_new_tokens=100):
             generated = answer[-1]['generated_text'][-1]['content'].strip()
             full_outputs.append(generated)
             answer = extract_category(generated, KEYWORDS_MAP)

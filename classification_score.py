@@ -32,8 +32,8 @@ def bootstrap_confidence_interval(metric, key, predictions, references, num_resa
 if __name__ == "__main__":
     import argparse
     parser = argparse.ArgumentParser()
-    parser.add_argument('input', type=str, help="Input file prefix")
-    parser.add_argument('output', type=str, help="Output score file")
+    parser.add_argument('--input', '-i', type=str, nargs='+', required=True, help="Input file prefix")
+    parser.add_argument('--output', '-o', type=str, required=True, help="Output score file")
     args = parser.parse_args()
 
     accuracy = evaluate.load("accuracy")
@@ -41,7 +41,7 @@ if __name__ == "__main__":
     precision = evaluate.load("precision") # labels=CATEGORIES, average='micro'
     recall = evaluate.load("recall") # labels=CATEGORIES, average='micro'
 
-    df = pd.read_json(args.input, lines=True)
+    df = pd.concat([pd.read_json(f, lines=True) for f in args.input])
     answers = list(df['predicted_category'])
     labels = list(df['true_category'])
 

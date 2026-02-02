@@ -4,6 +4,7 @@ import ipdb
 from transformers import AutoTokenizer
 import itertools
 import json
+from closed_models import GeminiTokenCounter, GPTTokenCounter
 
 
 def parity_score(l1: list[int], l2: list[int]) -> float:
@@ -17,11 +18,16 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
     parser.add_argument("--model", "-m", type=str, required=True, help="Model ID")
-    parser.add_argument("--input", "-i", type=str, required=True)
+    parser.add_argument("--input", "-i", type=str, nargs='+', required=True)
     parser.add_argument("--output", "-o", type=str, required=True)
     args = parser.parse_args()
 
-    tokenizer = AutoTokenizer.from_pretrained(args.model)
+    if "gemini" in args.model.lower():
+        tokenizer = GeminiTokenCounter(model_name=args.model.split("/")[-1])
+    elif "gpt" in args.model.lower():
+        tokenizer = GPTTokenCounter(model_name=args.model.split("/")[-1])  
+    else:
+        tokenizer = AutoTokenizer.from_pretrained(args.model)
     ds = datasets.load_dataset("json", data_files=args.input)["train"]
     
     pms_lengths = tokenizer(list(ds['flores_pms']), add_special_tokens=False, return_length=True)[

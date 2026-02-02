@@ -13,7 +13,7 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
     parser.add_argument("--model", "-m", type=str, required=True)
-    parser.add_argument("--input", "-i", type=str, required=True)
+    parser.add_argument("--input", "-i", type=str, nargs="+", required=True)
     parser.add_argument("--output", "-o", type=str, required=True)
     args = parser.parse_args()
 

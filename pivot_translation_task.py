@@ -1,7 +1,5 @@
 #!/usr/bin/env python3
-import transformers
 import datasets
-import torch
 import pandas as pd
 import itertools
 import tqdm
@@ -32,6 +30,8 @@ if __name__ == "__main__":
     if model_id in CLOSED_MODELS:
         model = ClosedModel(model_id)
     else:
+        import transformers
+        import torch
         model = transformers.pipeline("text-generation", model=model_id, device_map="auto", dtype=torch.bfloat16)
     
     def fmt(item_ds, system_prompt, user_prompt):        
