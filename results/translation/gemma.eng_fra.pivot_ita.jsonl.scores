@@ -1,0 +1,59 @@
+{
+  "bleu": {
+    "name": "BLEU",
+    "score": 47.46,
+    "signature": "nrefs:1|bs:1000|seed:12345|case:lc|eff:no|tok:13a|smooth:exp|version:2.5.1",
+    "confidence_mean": 47.41,
+    "confidence_var": 3.39,
+    "confidence": "\u03bc = 47.41 \u00b1 3.39",
+    "verbose_score": "74.3/54.6/42.2/33.2 (BP = 0.972 ratio = 0.973 hyp_len = 3717 ref_len = 3822)",
+    "nrefs": "1",
+    "bs": "1000",
+    "seed": "12345",
+    "case": "lc",
+    "eff": "no",
+    "tok": "13a",
+    "smooth": "exp",
+    "version": "2.5.1"
+  },
+  "chrf++": {
+    "name": "chrF2++",
+    "score": 67.64,
+    "signature": "nrefs:1|bs:1000|seed:12345|case:lc|eff:yes|nc:6|nw:2|space:no|version:2.5.1",
+    "confidence_mean": 67.6,
+    "confidence_var": 2.24,
+    "confidence": "\u03bc = 67.60 \u00b1 2.24",
+    "nrefs": "1",
+    "bs": "1000",
+    "seed": "12345",
+    "case": "lc",
+    "eff": "yes",
+    "nc": "6",
+    "nw": "2",
+    "space": "no",
+    "version": "2.5.1"
+  },
+  "ter": {
+    "name": "TER",
+    "score": 38.09,
+    "signature": "nrefs:1|bs:1000|seed:12345|case:lc|tok:tercom|norm:yes|punct:no|asian:no|version:2.5.1",
+    "confidence_mean": 38.12,
+    "confidence_var": 2.95,
+    "confidence": "\u03bc = 38.12 \u00b1 2.95",
+    "nrefs": "1",
+    "bs": "1000",
+    "seed": "12345",
+    "case": "lc",
+    "tok": "tercom",
+    "norm": "yes",
+    "punct": "no",
+    "asian": "no",
+    "version": "2.5.1"
+  },
+  "comet": {
+    "score": 0.9559323499942648,
+    "std": 0.0012514185431033774,
+    "ci_low": 0.953238016042612,
+    "ci_high": 0.9580559833737826
+  }
+}

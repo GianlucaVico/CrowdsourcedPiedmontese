@@ -1,0 +1,18 @@
+{
+  "avg_pms_length": 46.38961038961039,
+  "avg_ita_length": 34.142857142857146,
+  "avg_fra_length": 36.077922077922075,
+  "avg_eng_length": 29.22077922077922,
+  "parity_pms_vs_ita": 1.3697714791388824,
+  "parity_pms_vs_fra": 1.2971664650184567,
+  "parity_pms_vs_eng": 1.5902252310029026,
+  "parity_ita_vs_pms": 0.7476333948091173,
+  "parity_ita_vs_fra": 0.9532070056318659,
+  "parity_ita_vs_eng": 1.1685744605556798,
+  "parity_fra_vs_pms": 0.7987896242094221,
+  "parity_fra_vs_ita": 1.0746032571377853,
+  "parity_fra_vs_eng": 1.236592651769181,
+  "parity_eng_vs_pms": 0.6572570229726061,
+  "parity_eng_vs_ita": 0.8835301734406338,
+  "parity_eng_vs_fra": 0.8285575865176884
+}
