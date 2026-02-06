@@ -12,3 +12,4 @@ tmp*
 *.err
 plots/
 results/classification/*/
+LINDAT/*

@@ -14,3 +14,9 @@ scikit-learn
 sacrebleu
 snakemake-executor-plugin-slurm
 openai
+tqdm
+scipy
+evaluate
+simalign
+tiktoken
+google-genai

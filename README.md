@@ -1,31 +1,26 @@
-# Piedmontese data
+# Crowdsourcing Piedmontese to Test LLMs on Non-Standard Orthography
+
+This is the repository for the paper "Crowdsourcing Piedmontese to Test LLMs on Non-Standard Orthography" presented at the Thirteenth Workshop on NLP for Similar Languages, Varieties and Dialects (VarDial) 2026, colocated with EACL 2026 in Rabat, Morocco.
+
+The data is available here: [http://hdl.handle.net/11372/LRT-6086](http://hdl.handle.net/11372/LRT-6086).
+
+We use Snakemake to run the experiments, but each step can be run manually. The scripts assume that the datasets are in the `data` folder, without subfolders. The notebook `data_analysis.ipynb` and `plots.ipynb` are used mostly for the figures in the paper.
 
 ## Tasks
 
-- Zero shot translation: use collected data directly
-- Classification: SIB200 + collected data
-    - Same flores id (dev only)
-- paritiy: train wikipedia pms + flores devtest ita, test on collected data
-    - aligned words: zero shot for existing models
+- Tokenizer parity
+- Machine translation
+- Topic classification
+- Word alignment
 
-## Models
+## Related repositories
 
-- LLama 3.3 70b
-- Qwen 3
-- Gemma
-- EuroLLM 9b
-- (Tower (MT only))
+The repository for the questionnaire can be found here: [CrowdTranslation](https://github.com/GianlucaVico/CrowdTranslation).
+The tool for annotating the word alignments can be found here: [CrowdTranslationAnnotator](https://github.com/GianlucaVico/CrowdTranslationAnnotator).
 
-## Data
+## Cite
 
-- Partial flores
-- Aligned words
-- Categories: "science/technology", "travel", "politics", "sports", "health", "entertainment", "geography"
-
-
-## Content
-
-- data collection
-- data analysis on collected data
-
-
+```bibtex
+TODO
+```
+    
