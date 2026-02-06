@@ -1,9 +1,10 @@
 import itertools
 
-SLURM_CPU_PARTITION = "cpu-ms"
-SLURM_GPU_PARTITION = "gpu-troja,gpu-ms"
-SLURM_GPU_EXTRA="-G 1 -C 'gpuram95G'"
-SLURM_GPU_EXTRA_SMALL="-G 1 -C 'gpuram24G|gpuram40G|gpuram48G'"
+# Replace '...' with your setup
+SLURM_CPU_PARTITION = "..."
+SLURM_GPU_PARTITION = "..."
+SLURM_GPU_EXTRA="-G 1 -C '...'"
+SLURM_GPU_EXTRA_SMALL="-G 1 -C '...'"
 
 
 models = {
@@ -25,7 +26,6 @@ splits = ["dev", "devtest"]
 def get_gpus(wc):
     if wc.model in ["llama", "qwen"]:
         return "-G 2"
-        # return 1
     elif wc.model in ["gemini", "gpt"]:
         return ""
     else:
@@ -41,11 +41,11 @@ def get_constraint(wc):
     if wc.model in ["gemini", "gpt"]:
         return ""
     elif wc.model in ["llama", "qwen"]:
-        return "gpuram95G"
+        return "..."
     elif wc.model in ["eurollm", "tower", "gemma"]:
-        return "gpuram48G"
+        return "..."
     else:
-        return "gpuram95G"
+        return "..."
 
 def get_mem(wc):
     if wc.model in ["gemini", "gpt"]:
@@ -98,14 +98,7 @@ rule classification:
         cpus_per_task=1,
         tasks=1,
         nodes=1,        
-        slurm_extra=get_gpus,
-        # mem="60G",
-        # slurm_partition=get_partition,
-        # constraint=lambda wc: "gpuram48G" if wc.model not in ["gemini", "gpt"] else "",
-        # cpus_per_task=1,
-        # tasks=1,
-        # nodes=1,
-        # slurm_extra=lambda wc: "-G 4" if wc.model not in ["gemini", "gpt"] else "",
+        slurm_extra=get_gpus,       
     shell:
         """
         ./classification_task.py -m {params.model} -o {params.output_file} -l {wildcards.lang}
@@ -185,7 +178,7 @@ rule translation_eval:
         mem="15G",
         slurm_partition=SLURM_GPU_PARTITION,
         cpus_per_task=1,
-        constraint="gpuram24G|gpuram40G|gpuram48G",
+        constraint="...",
         tasks=1,
         nodes=1,        
         slurm_extra="-G 1",
