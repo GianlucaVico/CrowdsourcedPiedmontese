@@ -1,6 +1,6 @@
 # Crowdsourcing Piedmontese to Test LLMs on Non-Standard Orthography
 
-This is the repository for the paper "Crowdsourcing Piedmontese to Test LLMs on Non-Standard Orthography" presented at the Thirteenth Workshop on NLP for Similar Languages, Varieties and Dialects (VarDial) 2026, colocated with EACL 2026 in Rabat, Morocco.
+This is the repository for the paper [Crowdsourcing Piedmontese to Test LLMs on Non-Standard Orthography](https://arxiv.org/abs/2602.14675v1) presented at the Thirteenth Workshop on NLP for Similar Languages, Varieties and Dialects (VarDial) 2026, colocated with EACL 2026 in Rabat, Morocco.
 
 The data is available here: [http://hdl.handle.net/11372/LRT-6086](http://hdl.handle.net/11372/LRT-6086) and [https://huggingface.co/datasets/ufal/CrowdsourcingPiedmontese](https://huggingface.co/datasets/ufal/CrowdsourcingPiedmontese).
 
