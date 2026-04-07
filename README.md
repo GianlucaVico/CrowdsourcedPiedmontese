@@ -21,14 +21,27 @@ The tool for annotating the word alignments can be found here: [CrowdTranslation
 ## Cite
 
 ```bibtex
-@misc{vico2026crowdsourcingpiedmontesetestllms,
-      title={Crowdsourcing Piedmontese to Test LLMs on Non-Standard Orthography}, 
-      author={Gianluca Vico and Jindřich Libovický},
-      year={2026},
-      eprint={2602.14675},
-      archivePrefix={arXiv},
-      primaryClass={cs.CL},
-      url={https://arxiv.org/abs/2602.14675}, 
+@inproceedings{vico-libovicky-2026-crowdsourcing,
+    title = "Crowdsourcing {P}iedmontese to Test {LLM}s on Non-Standard Orthography",
+    author = "Vico, Gianluca  and
+      Libovick{\'y}, Jind{\v{r}}ich",
+    editor = {Scherrer, Yves  and
+      Aepli, No{\"e}mi  and
+      Blaschke, Verena  and
+      Jauhiainen, Tommi  and
+      Ljube{\v{s}}i{\'c}, Nikola  and
+      Nakov, Preslav  and
+      Tiedemann, J{\"o}rg  and
+      Zampieri, Marcos},
+    booktitle = "Proceedings of the 13th Workshop on {NLP} for Similar Languages, Varieties and Dialects",
+    month = mar,
+    year = "2026",
+    address = "Rabat, Morocco",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2026.vardial-1.6/",
+    doi = "10.18653/v1/2026.vardial-1.6",
+    pages = "70--86",
+    abstract = "We present a crowdsourced dataset for Piedmontese, an endangered Romance language of northwestern Italy. The dataset comprises 145 Italian{--}Piedmontese parallel sentences derived from Flores+, with translations produced by speakers writing in their natural orthographic style rather than adhering to standardized conventions, along with manual word alignment. We use this resource to benchmark several large language models on tokenization parity, topic classification, and machine translation. Our analysis reveals that Piedmontese incurs a tokenization penalty relative to higher-resource Romance languages, yet LLMs achieve classification performance approaching that of Italian, French, and English. Machine translation results are asymmetric: models translate adequately from Piedmontese into high-resource languages, but generation into Piedmontese remains challenging. The dataset and code are publicly released."
 }
 ```
 
